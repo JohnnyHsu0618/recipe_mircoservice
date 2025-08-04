@@ -134,32 +134,34 @@ sequenceDiagram
     participant Microservice as Recipe Microservice
 
     Note over MainProgram, Microservice: Scenario 1: Scaling a Recipe
-
-    MainProgram->>+Microservice: POST /scale-recipe (JSON with ingredients & servings)
-    Microservice->>Microservice: calculateScalingFactor(orig_servings, new_servings)
-    Microservice->>Microservice: adjustIngredientQuantities(ingredients, factor)
-    Microservice-->>-MainProgram: 200 OK (JSON with scaled ingredients)
+    MainProgram->>Microservice: POST /scale-recipe (JSON with ingredients & servings)
+    activate Microservice
+    Microservice->>Microservice: calculateScalingFactor() & adjustIngredientQuantities()
+    Microservice-->>MainProgram: 200 OK (JSON with scaled ingredients)
+    deactivate Microservice
 
     Note over MainProgram, Microservice: Scenario 2: Editing a Recipe
-
-    MainProgram->>+Microservice: POST /edit-recipe (JSON with recipe_id & changes)
-    Microservice->>Microservice: findRecipeById(recipe_id)
+    MainProgram->>Microservice: POST /edit-recipe (JSON with recipe_id & changes)
+    activate Microservice
+    Microservice->>Microservice: findRecipeById()
     alt Recipe Found
-        Microservice->>Microservice: updateRecipeDetails(updates)
-        Microservice-->>-MainProgram: 200 OK (JSON with full updated recipe)
+        Microservice->>Microservice: updateRecipeDetails()
+        Microservice-->>MainProgram: 200 OK (JSON with full updated recipe)
     else Recipe Not Found
-        Microservice-->>-MainProgram: 404 Not Found (JSON with error detail)
+        Microservice-->>MainProgram: 404 Not Found (JSON with error detail)
     end
+    deactivate Microservice
 
     Note over MainProgram, Microservice: Scenario 3: Favoriting a Recipe and Fetching Favorites
+    MainProgram->>Microservice: POST /favorite-recipe (JSON with recipe_id & favorite=true)
+    activate Microservice
+    Microservice->>Microservice: findRecipeById() & setFavoriteStatus()
+    Microservice-->>MainProgram: 200 OK (JSON with updated recipe)
+    deactivate Microservice
 
-    MainProgram->>+Microservice: POST /favorite-recipe (JSON with recipe_id & favorite=true)
-    Microservice->>Microservice: findRecipeById(recipe_id)
-    Microservice->>Microservice: setFavoriteStatus(true)
-    Microservice-->>-MainProgram: 200 OK (JSON with updated recipe)
-
-    MainProgram->>+Microservice: GET /recipes?favorite=true
+    MainProgram->>Microservice: GET /recipes?favorite=true
+    activate Microservice
     Microservice->>Microservice: queryRecipes(filter="favorite")
-    Microservice-->>-MainProgram: 200 OK (JSON with list of favorite recipes)
-
+    Microservice-->>MainProgram: 200 OK (JSON with list of favorite recipes)
+    deactivate Microservice
 ```
