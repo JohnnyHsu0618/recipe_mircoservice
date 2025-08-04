@@ -20,7 +20,11 @@ They should get the code from my GitHub repository. I will provide them with a l
 
 ### E. If your teammate cannot access/call YOUR microservice, what should they do?
 
+If it’s confirmed that the issue is not on their end, they should immediately contact me via message.
+
 ### F. If your teammate cannot access/call your microservice, by when do they need to tell you?
+
+It’s best to notify me as soon as the problem is discovered. That way, I’ll have enough time to debug and fix it.
 
 ### G. Is there anything else your teammate needs to know?
 
